@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchedulerServer", "SchedulerServer.csproj", "{D1BF0FB8-036B-48F4-B078-858BC7A1E7AB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D1BF0FB8-036B-48F4-B078-858BC7A1E7AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1BF0FB8-036B-48F4-B078-858BC7A1E7AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1BF0FB8-036B-48F4-B078-858BC7A1E7AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1BF0FB8-036B-48F4-B078-858BC7A1E7AB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
