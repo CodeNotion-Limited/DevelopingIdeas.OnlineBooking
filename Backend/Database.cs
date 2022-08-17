@@ -2,7 +2,7 @@ namespace BlazorWasmAcademyServer;
 
 public static class Database
 {
-    public static readonly AppointmentData[] CalendarEvents =
+    public static readonly List<Appointment> CalendarEvents = new()
     {
         new() {Start = DateTime.Today.AddDays(-2), End = DateTime.Today.AddDays(-2), Text = "SERVER Birthday"},
         new() {Start = DateTime.Today.AddDays(-11), End = DateTime.Today.AddDays(-10), Text = "SERVER Day off"},
