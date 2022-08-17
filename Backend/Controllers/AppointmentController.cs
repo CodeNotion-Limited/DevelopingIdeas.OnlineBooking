@@ -4,7 +4,7 @@ namespace BlazorWasmAcademyServer.Controllers;
 
 [ApiController]
 [Route("calendar-events")]
-public class AppointmentDataController : ControllerBase
+public class AppointmentController : ControllerBase
 {
     [HttpGet]
     public List<Appointment> GetAll() => Database.CalendarEvents
