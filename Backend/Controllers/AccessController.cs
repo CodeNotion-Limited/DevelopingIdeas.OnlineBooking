@@ -34,15 +34,16 @@ public class AccessController : ControllerBase
     }
 
     [HttpGet("access-log")]
-    public Task<List<AccessLog>> GetAccesses(string email)
+    public async Task<IEnumerable<AccessLog>> GetAccesses(string email)
     {
-        // chiamare in get https://api.nuki.io/smartlock/17988037356/log?limit=20
+        var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("Authorization", "Bearer a-x5_4mpVM47Bc_oo2B8-FytTLfvV72D6CtxQjqJCh4.JJFl0M0BZrpO-Gj_EzNFmqlOqs_wSk2GW8oyXb2SR_4");
+        var result = await client.GetAsync("https://api.nuki.io/smartlock/17988037356/log?limit=20");
 
-        // con la stessa logica di sopra
-
-        // per tradurre il risultato in una lista di oggetti c#
+        var accessLogs = await result.Content.ReadFromJsonAsync<List<AccessLog>>();
+        var accessLogsFiltered = accessLogs.Where(x => x.name == email).ToList(); ;
         
-        //var list = await result.Content.ReadFromJsonAsync<AccessLog>();
+        return accessLogsFiltered;
     }
 }
 
