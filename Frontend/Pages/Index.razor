@@ -3,46 +3,34 @@
 @inject IAppointmentClient AppointmentClient
 @inject IAccessClient AccessClient
 @inject NotificationService NotificationService
-@inject NorthwindContext dbContext
-
-@using RadzenBlazorDemos.Data
-@using RadzenBlazorDemos.Models.Northwind
-@using Microsoft.EntityFrameworkCore
 
 <div class="container" id="DataList">
     <div class="row py-5">
         <div class="col">
             <RadzenCard>
 
-                <RadzenDataList WrapItems="true" AllowPaging="true" Data="@products" TItem="Product" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
-                    <Template Context="product">
+                <RadzenDataList WrapItems="true" AllowPaging="true" Data="@_accessLogs" TItem="AccessLog" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
+                    <Template Context="accessLog">
                         <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
                             <div class="container">
                                 <div class="row">
                                     <div class="col-lg-3 p-3 product-title">
-                                            @(product.ProductName)
+                                            @(accessLog.Name)
                                     </div>
                                     <div class="col-lg-7 p-3">
                                         <div class="row d-flex">
                                             <div class="col-md-6 col-lg-2">
-                                                <h5 class="mb-0">In Stock</h5>
-                                                <p class="mb-sm-2 mb-lg-0">@(product.UnitsInStock)</p>
-                                            </div>
-                                            <div class="col-md-6 col-lg-2">
-                                                <h5 class="mb-0">Origin</h5>
-                                                <p class="mb-sm-2 mb-lg-0">@(product.Supplier?.Country)</p>
+                                                <h5 class="mb-0">Quando</h5>
+                                                <p class="mb-sm-2 mb-lg-0">@(accessLog.Date)</p>
                                             </div>
                                             <div class="col-md-6 col-lg-5">
-                                                <h5 class="mb-0">Sold by</h5>
-                                                <p class="mb-sm-2 mb-lg-0">@(product.Supplier?.CompanyName)</p>
+                                                <h5 class="mb-0">Id Smartlock</h5>
+                                                <p class="mb-sm-2 mb-lg-0">@(accessLog.Id)</p>
                                             </div>
-                                            <div class="col-md-6 order-first order-lg-last col-lg-3 text-sm-left text-lg-right mb-3 mb-lg-0">
-                                                <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Class="price-badge" Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", product.UnitPrice)}") />
-                                            </div>
+                                            @* <div class="col-md-6 order-first order-lg-last col-lg-3 text-sm-left text-lg-right mb-3 mb-lg-0"> *@
+                                            @*     <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Class="price-badge" Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", product.UnitPrice)}") /> *@
+                                            @* </div> *@
                                         </div>
-                                    </div>
-                                    <div class="col-lg-2 p-3">
-                                        <RadzenButton Text="Order now" Class="w-100" />
                                     </div>
                                 </div>
                             </div>
@@ -58,8 +46,8 @@
 <style>
 .product-title {
     min-height: 72px;
-    color: #da0074;
-    background-color: rgba(255, 41, 155, .1);
+    color: #fae9e3;
+    background-color: #ff6d41;
     font-size: 20px;
     font-weight: bold;
     line-height: 20px;
@@ -84,15 +72,11 @@
 </RadzenScheduler>
 
 @code {
-    IEnumerable<Product> products;
-
-    protected override void OnInitialized()
-    {
-        products = dbContext.Products.Include("Category").Include("Supplier").ToList();
-    }
     
     RadzenScheduler<Appointment> scheduler;
     private ICollection<Appointment> _appointments = new List<Appointment>();
+    private IEnumerable<AccessLog> _accessLogs = new List<AccessLog>();
+    
 
     Timer? _updateTimer;
     
@@ -104,6 +88,7 @@
     async Task RefreshData()
     {
         _appointments = await AppointmentClient.GetAllAsync();
+        _accessLogs = await AccessClient.GetAccessesAsync("Dennis (Keypad)");
         StateHasChanged();
     }
 
