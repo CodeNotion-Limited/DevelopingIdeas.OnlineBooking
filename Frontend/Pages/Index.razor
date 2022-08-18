@@ -1,6 +1,10 @@
 @page "/scheduler"
 @inject DialogService DialogService
 @inject IAppointmentClient AppointmentClient
+@inject IAccessClient AccessClient
+@inject NotificationService NotificationService;
+
+<RadzenButton Click="@OpenDoor" Text="Apri" />
 
 <RadzenScheduler @ref=@scheduler SlotRender=@OnSlotRender style="height: 768px;" TItem="Appointment" Data=@_appointments StartProperty="Start" EndProperty="End"
                  TextProperty="Text" SelectedIndex="2"
@@ -12,20 +16,19 @@
 
 @code {
     RadzenScheduler<Appointment> scheduler;
-    Dictionary<DateTime, string> events = new Dictionary<DateTime, string>();
     private ICollection<Appointment> _appointments = new List<Appointment>();
 
-    async Task RefreshData()
-    {
-        _appointments = await AppointmentClient.GetAllAsync();
-        StateHasChanged();
-    }
-    
     Timer? _updateTimer;
     
     protected override async Task OnInitializedAsync()
     {
         _updateTimer = new Timer(_ => { InvokeAsync(RefreshData); }, null, 0, 500);
+    }
+    
+    async Task RefreshData()
+    {
+        _appointments = await AppointmentClient.GetAllAsync();
+        StateHasChanged();
     }
 
     void OnSlotRender(SchedulerSlotRenderEventArgs args)
@@ -45,12 +48,15 @@
 
     async Task OnSlotSelect(SchedulerSlotSelectEventArgs args)
     {
-        Appointment data = await DialogService.OpenAsync<AddAppointmentPage>("Add Appointment", new Dictionary<string, object> {{"Start", args.Start}, {"End", args.End}});
+        Appointment data = await DialogService.OpenAsync<AddAppointmentPage>("Add Appointment", 
+            new Dictionary<string, object> {{"Start", args.Start}, {"End", args.End}});
 
         if (data != null)
         {
-            _appointments.Add(data);
-    // Either call the Reload method or reassign the Data property of the Scheduler
+            AddAppointment(data);
+            Console.WriteLine(data.Text);
+            Console.WriteLine(data.UserEmail);
+            // Either call the Reload method or reassign the Data property of the Scheduler
             await scheduler.Reload();
         }
     }
@@ -72,4 +78,36 @@
         }
     }
 
+    private async Task AddAppointment(Appointment newAppointment)
+    {
+        await AppointmentClient.CreateAsync(newAppointment);
+        _appointments = await AppointmentClient.GetAllAsync();
+    }
+
+    private async void OpenDoor()
+    {
+        bool doorOpen = await AccessClient.AccessAsync("dennisbattisti.26@gmail.com");
+        if (doorOpen)
+        {
+            var successMessage = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Ok!",
+                Detail = "Porta aperta con successo",
+                Duration = 4000
+            };
+            NotificationService.Notify(successMessage);
+        }
+        else
+        {
+            var errorMessage = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Warning,
+                Summary = "Attenzione",
+                Detail = "Non puoi aprire la porta",
+                Duration = 4000
+            };
+            NotificationService.Notify(errorMessage);
+        }
+    }
 }
