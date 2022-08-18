@@ -48,11 +48,14 @@
 
     async Task OnSlotSelect(SchedulerSlotSelectEventArgs args)
     {
-        Appointment data = await DialogService.OpenAsync<AddAppointmentPage>("Add Appointment", new Dictionary<string, object> {{"Start", args.Start}, {"End", args.End}});
+        Appointment data = await DialogService.OpenAsync<AddAppointmentPage>("Add Appointment", 
+            new Dictionary<string, object> {{"Start", args.Start}, {"End", args.End}});
 
         if (data != null)
         {
             AddAppointment(data);
+            Console.WriteLine(data.Text);
+            Console.WriteLine(data.UserEmail);
             // Either call the Reload method or reassign the Data property of the Scheduler
             await scheduler.Reload();
         }

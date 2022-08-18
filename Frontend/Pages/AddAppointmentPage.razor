@@ -28,15 +28,6 @@
             <RadzenRequiredValidator Component="End" Text="End is required" />
         </div>
     </div>
-    <div class="row" style="margin-bottom: 16px">
-            <div class="col-md-3">
-                <RadzenLabel Text="Email" />
-            </div>
-            <div class="col">
-                <RadzenTextBox @bind-Value="@model.UserEmail" Name="UserEmail" />
-                <RadzenRequiredValidator Text="Email is required" Component="UserEmail" />
-            </div>
-        </div>
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col">
@@ -44,12 +35,16 @@
         </div>
     </div>
 </RadzenTemplateForm>
+
 @code {
     [Parameter]
     public DateTime Start { get; set; }
 
     [Parameter]
     public DateTime End { get; set; }
+    
+    [Parameter]
+    public string Text { get; set; }
 
     Appointment model = new Appointment();
 
@@ -57,6 +52,8 @@
     {
         model.Start = Start;
         model.End = End;
+        model.Text = Text;
+        model.UserEmail = "dennisbattisti.26@gmail.com";
     }
 
     void OnSubmit(Appointment model)
